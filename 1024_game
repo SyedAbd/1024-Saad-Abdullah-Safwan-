@@ -1,0 +1,288 @@
+//
+//  main.cpp
+//  1024_game
+//
+//  Created by Syed Abdullah on 23/12/2021.
+//
+
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+#include <ctime>
+using namespace std;
+
+int board[4][4];
+
+void printboard();
+void menu();
+void swipeup();
+void swipedown();
+void swipeleft();
+void swiperight();
+void newgame();
+int number();
+void fillboard();
+int check();
+
+int main() {
+    int won = 0;
+    newgame();
+    char func;
+   
+    while(true){
+        fillboard();
+        printboard();
+        
+        menu();
+        cin >> func;
+        
+        switch(func){
+            case 'n':{
+                newgame();
+                break;}
+            case 'u':{
+                swipeup();
+                break;}
+            case 'd':{
+                swipedown();
+                break;}
+            case 'l':{
+                swipeleft();
+                break;}
+            case 'r':{
+                swiperight();
+                break;}
+        }
+        
+        won = check();
+        if (won == 1){
+            cout << "Congrats you have won the game :) \n";
+            break;
+        }
+        if (won == 2){
+            cout << "You have failed this game (refrence :green arrow) \n";
+            break;
+        }
+        
+        
+        
+        
+        
+    }
+    
+    
+    
+   
+    return 0;
+}
+
+
+void menu(){
+    cout << "n for new game, l to swipe left, r to swipe right, u to swipe up, d to swipe down and q to quite the game ";
+    
+}
+
+void newgame(){
+    for (int i = 0 ; i < 4;i++){
+        for (int j = 0 ; j < 4 ; j++){
+            board[i][j] = 0;
+        }
+        
+    }
+    
+}
+void printboard()
+{
+    for (int i=0; i<4; i++)
+    {
+        if (i == 0)cout << "\t \t \t  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" << endl;
+        cout << "\t \t \t";
+        cout << "  |  ";
+        for (int j=0; j<4; j++)
+        {
+            if (board[i][j]==0)
+                cout << setw(4) << " ";
+            else cout << setw(4) << board[i][j];
+            cout << "  |  ";
+        }
+        cout << endl;
+        cout << "\t \t \t  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾";
+        cout << endl;
+    }
+}
+
+void swipeleft(){
+    // for shifting
+    for (int i = 0; i < 4 ; i++){
+        for (int j = 0 ; j < 4 ; j++ ){
+            if (board[i][j] == 0){
+                for (int k = j ; k < 3; k++ ){
+                    if(board[i][k+1] != 0){
+                    board[i][j] = board[i][k+1];
+                    board[i][k+1] = 0;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    // for adding
+    for (int q = 0 ; q < 4 ; q++){
+        for (int p = 0 ; p < 3; p++){
+            if (board[q][p] == board[q][p+1]){
+                board[q][p] += board[q][p+1];
+                board[q][p+1] =0;
+                for (int t = p+1 ; t < 3; t++ ){
+                    board[q][t] = board[q][t+1];
+                    board[q][t+1] = 0;
+                    
+                }
+            }
+        }
+    }
+}
+
+
+void swiperight(){
+    
+    // for shifting
+    for (int i = 3; i >= 0 ; i--){
+        for (int j = 3 ; j >= 0 ; j-- ){
+            if (board[i][j] == 0){
+                for (int k = j ; k > 0; k-- ){
+                    if (board[i][k-1] != 0){
+                    board[i][j] = board[i][k-1];
+                        board[i][k-1] = 0;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    //  for adding the same numbers
+    for (int q = 3 ; q >= 0 ; q--){
+        for (int p = 3 ; p > 0; p--){
+            if (board[q][p] == board[q][p-1]){
+                board[q][p] += board[q][p-1];
+                board[q][p-1] = 0;
+                for (int t = p-1 ; t > 0; t-- ){
+                    board[q][t] = board[q][t-1];
+                    board[q][t-1] = 0;
+                    
+                }
+            }
+        }
+    }
+}
+
+void swipedown(){
+    
+    // for shifting
+    for (int j = 3; j >= 0  ; j--){
+        for (int i = 3 ; i >= 0 ; i-- ){
+            if (board[i][j] == 0){
+                for (int k = i ; k > 0; k-- ){
+                    if(board[k-1][j] != 0){
+                    board[i][j] = board[k-1][j];
+                    board[k-1][j] = 0;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    // for adding
+    for (int q = 3 ; q >= 0 ; q--){
+        for (int p = 3 ; p >= 0; p--){
+            if (board[p][q] == board[p-1][q]){
+                board[p][q] += board[p-1][q];
+                for (int t = p-1 ; t > 0; t-- ){
+                    board[t][q] = board[t-1][q];
+                    board[t-1][q] = 0;
+                }
+            }
+        }
+    }
+    
+}
+
+void swipeup(){
+    // for shifting
+    for (int j = 0; j < 4 ; j++){
+        for (int i = 0 ; i < 4 ; i++ ){
+            if (board[i][j] == 0){
+                for (int k = i ; k < 3; k++ ){
+                    if(board[k+1][j] != 0){
+                    board[i][j] = board[k+1][j];
+                    board[k+1][j] = 0;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    // for adding
+    for (int q = 0 ; q < 4 ; q++){
+        for (int p = 0 ; p < 4; p++){
+            if (board[p][q] == board[p+1][q]){
+                board[p][q] += board[p+1][q];
+                
+                for (int t = p+1 ; t < 3; t++ ){
+                    board[t][q] = board[t+1][q];
+                    board[t+1][q] = 0;
+                }
+            }
+        }
+    }
+    
+}
+void fillboard(){
+    srand(time(0));
+    int n = number(),row,col;
+    
+    while(true){
+        row = rand()%4;
+        col = rand()%4;
+        if(board [row][col] == 0){
+            board[row][col] = n;
+            break;
+        }
+    }
+}
+
+int number(){
+    
+    srand(time(0));
+        
+            return rand()%2 +1;
+    
+    
+}
+
+int check(){
+    
+    for (int i = 0; i < 4 ; i++){
+        for (int j = 0; j < 4 ; j++){
+            if (board [i][j] == 1024)
+                return 1;
+        }
+        
+    }
+    for (int k = 0 ; k < 4;k++){
+        for (int l = 0; l < 4 ; l++){
+            if (board [k] [l] == 0) return 0;
+            
+        }
+    }
+    
+    return 2;
+  
+}
